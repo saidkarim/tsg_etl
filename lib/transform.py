@@ -4,6 +4,7 @@ import pandas as pd
 
 
 class Transform(ABC):
+    """A Base class for staging data transformation."""
 
     @abstractmethod
     def perform(self):
@@ -16,6 +17,7 @@ class Transform(ABC):
 
 
 class SolarTransform(Transform):
+    """Staging data transformation for Solar ETL"""
 
     @staticmethod
     def _fix_column_types(df: pd.DataFrame) -> pd.DataFrame:
@@ -37,6 +39,7 @@ class SolarTransform(Transform):
 
 
 class WindTransform(Transform):
+    """Staging data transformation for Wind ETL"""
 
     @staticmethod
     def _fix_column_types(df: pd.DataFrame) -> pd.DataFrame:
