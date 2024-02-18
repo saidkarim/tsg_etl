@@ -4,7 +4,7 @@
 ### Getting Started
 1. Setup a virtual environment (`pipenv`, `venv`, etc.)
 2. Install requirements into your environment: `pip install -r requirements.txt`
-3. Run ETL: `python main.py`. It's assumed that the api data source is already running.
+3. Run ETL: `python main.py`. It's assumed that the api data source is already running at this stage.
 
 ### Tests
 Run tests: `pytest tests`
