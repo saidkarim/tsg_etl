@@ -16,6 +16,10 @@ class CsvDataExtractionError(Exception):
     """An error occurred during csv data extraction"""
 
 
+class UnknownResponseDataExtractionError(Exception):
+    """Unsuccessful response received from the API"""
+
+
 @dataclass
 class DataExtraction(ABC):
     """A Base class for data extraction strategy."""
@@ -39,7 +43,7 @@ class DataExtraction(ABC):
                 if response.status_code == 200:
                     logger.info("The request %s succeeded.", self.url)
                     break
-                if response.status_code == 429:
+                elif response.status_code == 429:
                     logger.info(
                         "Too many requests have been sent. Trying again in %s seconds",
                         trial_sec,
@@ -47,7 +51,10 @@ class DataExtraction(ABC):
                     trial += 1
                     time.sleep(trial_sec)
 
-            assert response.status_code == 200, "The request didn't succeed."
+                else:
+                    raise UnknownResponseDataExtractionError(
+                        "The request didn't succeed."
+                    )
 
         except requests.exceptions.Timeout as e:
             logger.error("Timed out: %s", str(e))

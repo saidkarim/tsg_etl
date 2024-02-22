@@ -1,6 +1,11 @@
 import pytest
 from unittest.mock import patch, MagicMock
-from lib.extract import JsonDataExtraction, CsvDataExtraction, CsvDataExtractionError
+from lib.extract import (
+    JsonDataExtraction,
+    CsvDataExtraction,
+    CsvDataExtractionError,
+    UnknownResponseDataExtractionError,
+)
 import pandas as pd
 
 
@@ -15,6 +20,13 @@ def mock_response_success():
 def mock_response_retry():
     mock_resp = MagicMock()
     mock_resp.status_code = 429
+    return mock_resp
+
+
+@pytest.fixture
+def mock_response_failure():
+    mock_resp = MagicMock()
+    mock_resp.status_code = 403
     return mock_resp
 
 
@@ -57,4 +69,15 @@ def test_csv_data_extraction_error():
     ):
         extractor = CsvDataExtraction(url="http://test.com")
         with pytest.raises(CsvDataExtractionError):
+            _ = extractor.etl_data
+
+
+def test_data_extraction_unsuccessful_response(mock_response_failure):
+    mock_response_success.text = '{"name": ["Said", "Gunel"], "age": [30, 25]}'
+    with patch(
+        "lib.extract.requests.get",
+        side_effect=mock_response_failure,
+    ):
+        extractor = JsonDataExtraction(url="http://test.com")
+        with pytest.raises(UnknownResponseDataExtractionError):
             _ = extractor.etl_data
