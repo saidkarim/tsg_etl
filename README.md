@@ -1,4 +1,4 @@
-## TSG ETL Tool - Take Home Challenge
+## TSG ETL Tool
 
 
 ### Getting Started
